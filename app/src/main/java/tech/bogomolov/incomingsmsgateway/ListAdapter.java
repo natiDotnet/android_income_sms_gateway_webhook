@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -47,6 +48,19 @@ public class ListAdapter extends ArrayAdapter<ForwardingConfig> {
 
         TextView url = row.findViewById(R.id.text_url);
         url.setText(config.getUrl());
+
+        TextView formatView = row.findViewById(R.id.text_format);
+        ImageView providerIcon = row.findViewById(R.id.icon_provider);
+        String formatType = config.getFormatType();
+        if ("telebirr".equals(formatType)) {
+            formatView.setText(context.getString(R.string.format_label, context.getString(R.string.format_telebirr)));
+            formatView.setVisibility(View.VISIBLE);
+            providerIcon.setImageResource(R.drawable.ic_telebirr);
+            providerIcon.setVisibility(View.VISIBLE);
+        } else {
+            formatView.setVisibility(View.GONE);
+            providerIcon.setVisibility(View.GONE);
+        }
 
         SwitchCompat switchSmsOnOff = row.findViewById(R.id.switch_sms_on_off);
         // Detach any listener a recycled row carries before syncing the state,

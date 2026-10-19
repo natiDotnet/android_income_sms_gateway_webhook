@@ -5,6 +5,12 @@
     <string name="input_url">https://example.com</string>
     <string name="label_advanced">Advanced parameters</string>
     <string name="label_routing_params">Routing parameters</string>
+    <string name="label_message_format">Message format</string>
+    <string name="format_custom">Custom</string>
+    <string name="format_telebirr">Telebirr</string>
+    <string name="format_telebirr_info">Pre-filled for Telebirr sender 127: extracts amount, sender name, sender phone, date/time, transaction number and balance.</string>
+    <string name="format_label">Format: %s</string>
+    <string name="provider_logo">Provider logo</string>
     <string name="btn_add">Add</string>
     <string name="btn_save">Save</string>
     <string name="btn_cancel">Cancel</string>

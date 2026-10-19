@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -74,6 +75,30 @@ public class ForwardingConfigDialog {
 
         signHmacSha256Checkbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             signHmacSha256Input.setEnabled(isChecked);
+        });
+
+        // Message format presets (e.g. Telebirr). Selecting one pre-fills sender,
+        // SMS filter and payload template.
+        final Spinner formatSpinner = view.findViewById(R.id.input_format_type);
+        final View formatInfo = view.findViewById(R.id.format_info);
+        ArrayAdapter<String> formatAdapter = new ArrayAdapter<>(context,
+                android.R.layout.simple_spinner_item, ForwardingConfig.getFormatIds());
+        formatAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        formatSpinner.setAdapter(formatAdapter);
+        formatSpinner.setSelection(0); // custom by default
+        formatInfo.setVisibility(View.GONE);
+
+        formatSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view1, int position, long id) {
+                String format = ForwardingConfig.getFormatIds()[position];
+                applyFormat(format, view, context);
+                formatInfo.setVisibility("telebirr".equals(format) ? View.VISIBLE : View.GONE);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         prepareSimSelector(context, view, 0);
@@ -156,6 +181,42 @@ public class ForwardingConfigDialog {
 
         signHmacSha256Checkbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             signHmacSha256Input.setEnabled(isChecked);
+        });
+
+        // Message format spinner — reflect the saved format without re-applying
+        // (and potentially overwriting) the already-loaded field values on initial
+        // load. The listener is attached after setSelection so loading is silent;
+        // later user changes still trigger applyFormat.
+        final Spinner formatSpinner = view.findViewById(R.id.input_format_type);
+        final View formatInfo = view.findViewById(R.id.format_info);
+        ArrayAdapter<String> formatAdapter = new ArrayAdapter<>(context,
+                android.R.layout.simple_spinner_item, ForwardingConfig.getFormatIds());
+        formatAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        formatSpinner.setAdapter(formatAdapter);
+
+        String savedFormat = config.getFormatType();
+        int selectedIndex = 0;
+        String[] formatIds = ForwardingConfig.getFormatIds();
+        for (int i = 0; i < formatIds.length; i++) {
+            if (formatIds[i].equals(savedFormat)) {
+                selectedIndex = i;
+                break;
+            }
+        }
+        formatSpinner.setSelection(selectedIndex);
+        formatInfo.setVisibility("telebirr".equals(savedFormat) ? View.VISIBLE : View.GONE);
+
+        formatSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view1, int position, long id) {
+                String format = ForwardingConfig.getFormatIds()[position];
+                applyFormat(format, view, context);
+                formatInfo.setVisibility("telebirr".equals(format) ? View.VISIBLE : View.GONE);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         // Auto-expand advanced when editing a rule that already relies on it, so the
@@ -283,6 +344,9 @@ public class ForwardingConfigDialog {
         config.setSignHmacSha256(signHmacSha256);
         config.setSignHmacSha256Secret(signHmacSha256Secret);
 
+        Spinner formatSpinner = view.findViewById(R.id.input_format_type);
+        config.setFormatType(ForwardingConfig.getFormatIds()[formatSpinner.getSelectedItemPosition()]);
+
         return config;
     }
 
@@ -351,6 +415,29 @@ public class ForwardingConfigDialog {
                 simSlotSelector.setSelection(selected);
             }
         }
+    }
+
+    // Applies a pre-defined format to the form: sender, SMS filter and JSON
+    // template. Only touches those three fields so the user can still override
+    // anything (URL, retries, etc.).
+    private void applyFormat(String formatType, View view, Context context) {
+        EditText senderInput = view.findViewById(R.id.input_phone);
+        EditText smsFilterInput = view.findViewById(R.id.input_sms_filter);
+        EditText templateInput = view.findViewById(R.id.input_json_template);
+        SwitchCompat senderRegex = view.findViewById(R.id.input_sender_regex);
+
+        String sender = ForwardingConfig.getFormatSender(formatType);
+        String filter = ForwardingConfig.getFormatSmsFilter(formatType);
+        String template = ForwardingConfig.getFormatTemplate(formatType);
+
+        if (!sender.isEmpty()) {
+            senderInput.setText(sender);
+        }
+        smsFilterInput.setText(filter);
+        templateInput.setText(template);
+
+        // Telebirr sender "127" is an exact match, not a regex.
+        senderRegex.setChecked(false);
     }
 
     private void testConfig(ForwardingConfig config) {

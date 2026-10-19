@@ -38,6 +38,7 @@ public class ForwardingConfig {
     private static final String KEY_SIGN_HMAC_SHA256_SECRET = "sign_hmac_sha256_secret";
     private static final String KEY_STORE_FAILED = "store_failed";
     private static final String KEY_LOCAL_MODE = "local_mode";
+    private static final String KEY_FORMAT_TYPE = "format_type";
 
     private String key;
     private String sender;
@@ -55,6 +56,7 @@ public class ForwardingConfig {
     private String signHmacSha256Secret;
     private boolean storeFailed = false;
     private boolean localMode = false; // forward without a validated internet connection
+    private String formatType = "custom"; // "custom" or a predefined format id such as "telebirr"
 
     public ForwardingConfig(Context context) {
         this.context = context;
@@ -180,6 +182,14 @@ public class ForwardingConfig {
         this.localMode = localMode;
     }
 
+    public String getFormatType() {
+        return this.formatType;
+    }
+
+    public void setFormatType(String formatType) {
+        this.formatType = formatType == null ? "custom" : formatType;
+    }
+
     public boolean getIsSmsEnabled() {
         return this.isSmsEnabled;
     }
@@ -198,6 +208,60 @@ public class ForwardingConfig {
 
     public static int getDefaultRetriesNumber() {
         return 10;
+    }
+
+    // Pre-defined message formats. Each format id maps to a sender filter, an SMS
+    // body filter and a JSON payload template that extracts the fields specific to
+    // that provider using the %Regex=…% placeholder. Selecting a format in the
+    // dialog pre-fills the rule so the user does not have to write the regexes by
+    // hand. "custom" means no pre-fill (the historic behaviour).
+    private static final String FORMAT_CUSTOM = "custom";
+    private static final String FORMAT_TELEBIRR = "telebirr";
+
+    /**
+     * Returns the list of format ids shown in the format spinner, in display order.
+     * The first entry is always the custom (no preset) option.
+     */
+    public static String[] getFormatIds() {
+        return new String[]{FORMAT_CUSTOM, FORMAT_TELEBIRR};
+    }
+
+    public static String getFormatSender(String formatType) {
+        if (FORMAT_TELEBIRR.equals(formatType)) {
+            return "127";
+        }
+        return "";
+    }
+
+    public static String getFormatSmsFilter(String formatType) {
+        if (FORMAT_TELEBIRR.equals(formatType)) {
+            // Match any message addressed to any name ("Dear <name>") that
+            // confirms a receipt ("You have received ETB"). The (?s) flag lets
+            // . cross newlines so "Dear <name>" and the receipt can be on
+            // separate lines.
+            return "(?i)(?s)dear .+?\\n.*You have received ETB";
+        }
+        return "";
+    }
+
+    public static String getFormatTemplate(String formatType) {
+        if (FORMAT_TELEBIRR.equals(formatType)) {
+            return "{\n"
+                    + "  \"provider\": \"telebirr\",\n"
+                    + "  \"from\": \"%from%\",\n"
+                    + "  \"amount\": \"%Regex=ETB ([\\d,.]+)%\",\n"
+                    + "  \"sender_name\": \"%Regex=from ([^(]+)%\",\n"
+                    + "  \"sender_phone\": \"%Regex=\\(([^)]+)\\)%\",\n"
+                    + "  \"datetime\": \"%Regex=on ([\\d/]+ [\\d:]+)%\",\n"
+                    + "  \"transaction_number\": \"%Regex=transaction number is ([\\w]+)%\",\n"
+                    + "  \"balance\": \"%Regex=balance is (ETB [\\d,.]+)%\",\n"
+                    + "  \"text\": \"%text%\",\n"
+                    + "  \"sentStamp\": %sentStamp%,\n"
+                    + "  \"receivedStamp\": %receivedStamp%,\n"
+                    + "  \"sim\": \"%sim%\"\n"
+                    + "}";
+        }
+        return getDefaultJsonTemplate();
     }
 
     // Serializes this config to the same JSON object used both for SharedPreferences
@@ -225,6 +289,7 @@ public class ForwardingConfig {
         json.put(KEY_SIGN_HMAC_SHA256_SECRET, this.signHmacSha256Secret);
         json.put(KEY_STORE_FAILED, this.storeFailed);
         json.put(KEY_LOCAL_MODE, this.localMode);
+        json.put(KEY_FORMAT_TYPE, this.formatType);
         return json;
     }
 
@@ -326,6 +391,9 @@ public class ForwardingConfig {
                     }
                     if (json.has(KEY_LOCAL_MODE)) {
                         config.setLocalMode(json.getBoolean(KEY_LOCAL_MODE));
+                    }
+                    if (json.has(KEY_FORMAT_TYPE)) {
+                        config.setFormatType(json.getString(KEY_FORMAT_TYPE));
                     }
                     if (json.has(KEY_IS_SENDER_REGEX)) {
                         config.setIsSenderRegex(json.getBoolean(KEY_IS_SENDER_REGEX));
