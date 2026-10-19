@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#8AB4F8</color>
-    <color name="colorAccent">#8AB4F8</color>
-    <color name="colorDanger">#F28B82</color>
+    <color name="colorPrimary">#4CAF50</color>
+    <color name="colorPrimaryDark">#1B5E20</color>
+    <color name="colorAccent">#FFB300</color>
+    <color name="colorSecondary">#FFB300</color>
+    <color name="colorDanger">#EF5350</color>
+    <color name="colorSuccess">#4CAF50</color>
     <color name="colorSurface">#1E2022</color>
     <color name="colorBackground">#121315</color>
+    <color name="colorCard">#1E2022</color>
+    <color name="colorDivider">#3C4043</color>
     <color name="colorStatusBar">#121315</color>
     <color name="colorEmptyIcon">#3C4043</color>
 </resources>

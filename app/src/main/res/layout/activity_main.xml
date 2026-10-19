@@ -20,8 +20,8 @@
         android:paddingRight="@dimen/spacing_large">
 
         <ImageView
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:importantForAccessibility="no"
             app:srcCompat="@drawable/ic_empty_rules" />
 
@@ -29,11 +29,21 @@
             android:id="@+id/info_notice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
+            android:layout_marginTop="@dimen/spacing_large"
             android:gravity="center"
             android:lineSpacingExtra="4sp"
             android:textColor="?android:attr/textColorSecondary"
-            android:textSize="15sp" />
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:gravity="center"
+            android:lineSpacingExtra="2sp"
+            android:text="@string/empty_list_subtitle"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="13sp" />
 
     </LinearLayout>
 
@@ -41,12 +51,16 @@
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
+        android:clipToPadding="true"
         android:divider="@null"
         android:dividerHeight="0dp"
         android:listSelector="@android:color/transparent"
         android:paddingTop="@dimen/spacing_small"
-        android:paddingBottom="88dp"
+        android:paddingBottom="100dp"
+        android:paddingStart="@dimen/spacing_medium"
+        android:paddingLeft="@dimen/spacing_medium"
+        android:paddingEnd="@dimen/spacing_medium"
+        android:paddingRight="@dimen/spacing_medium"
         android:scrollbarStyle="outsideOverlay" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

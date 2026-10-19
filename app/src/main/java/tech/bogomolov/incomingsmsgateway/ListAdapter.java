@@ -49,16 +49,18 @@ public class ListAdapter extends ArrayAdapter<ForwardingConfig> {
         TextView url = row.findViewById(R.id.text_url);
         url.setText(config.getUrl());
 
-        TextView formatView = row.findViewById(R.id.text_format);
         ImageView providerIcon = row.findViewById(R.id.icon_provider);
+        TextView formatBadge = row.findViewById(R.id.chip_format);
         String formatType = config.getFormatType();
         if ("telebirr".equals(formatType)) {
-            formatView.setText(context.getString(R.string.format_label, context.getString(R.string.format_telebirr)));
-            formatView.setVisibility(View.VISIBLE);
+            formatBadge.setText(context.getString(R.string.format_telebirr));
+            formatBadge.setTextColor(context.getColor(R.color.chip_text_checked));
+            formatBadge.setBackgroundResource(R.drawable.bg_badge_active);
+            formatBadge.setVisibility(View.VISIBLE);
             providerIcon.setImageResource(R.drawable.ic_telebirr);
             providerIcon.setVisibility(View.VISIBLE);
         } else {
-            formatView.setVisibility(View.GONE);
+            formatBadge.setVisibility(View.GONE);
             providerIcon.setVisibility(View.GONE);
         }
 
