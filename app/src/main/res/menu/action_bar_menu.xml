@@ -1,6 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/action_bar_transactions"
+        android:title="@string/menu_transactions"
+        app:showAsAction="never"
+        />
+    <item
         android:id="@+id/action_bar_retry_failed"
         android:title="@string/menu_retry_failed"
         android:visible="false"

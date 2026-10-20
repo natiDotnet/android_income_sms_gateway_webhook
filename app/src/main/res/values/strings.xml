@@ -65,6 +65,10 @@
     <string name="heartbeat_saved_toast">Settings saved</string>
     <string name="menu_retry_failed">Retry %d failed</string>
     <string name="retry_failed_toast">Re-sending %d failed message(s)</string>
+    <string name="menu_transactions">Transactions</string>
+    <string name="title_transactions">Transactions</string>
+    <string name="permission_read_sms_needed">Read SMS permission is needed to show your transaction history.</string>
+    <string name="empty_transactions">No transaction messages found in your inbox.</string>
     <string name="label_backup_section">Backup</string>
     <string name="backup_info">Export your forwarding rules to a file to back them up, then import the file to restore them or move them to another device.</string>
     <string name="btn_export">Export</string>
