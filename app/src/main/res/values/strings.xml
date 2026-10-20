@@ -3,6 +3,7 @@
     <string name="permission_needed">Set permission to access SMS to use this app.</string>
     <string name="empty_list_hint">No forwarding rules yet.\nTap + to add one.</string>
     <string name="empty_list_subtitle">Forward SMS from Telebirr, CBE, Dashen and more to your webhook URL.</string>
+    <string name="subtitle_dashboard">Forwarding rules</string>
     <string name="input_url">https://example.com</string>
     <string name="label_advanced">Advanced parameters</string>
     <string name="label_routing_params">Routing parameters</string>
