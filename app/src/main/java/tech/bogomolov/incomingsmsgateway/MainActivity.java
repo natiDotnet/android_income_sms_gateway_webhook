@@ -116,16 +116,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.action_bar_menu, menu);
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem retryItem = menu.findItem(R.id.action_bar_retry_failed);
-        int count = FailedMessage.getCount(this);
-        retryItem.setVisible(count > 0);
-        if (count > 0) {
-            retryItem.setTitle(getString(R.string.menu_retry_failed, count));
+        // Retry item may not exist yet or FailedMessage may throw; guard both.
+        try {
+            MenuItem retryItem = menu.findItem(R.id.action_bar_retry_failed);
+            if (retryItem != null) {
+                int count = FailedMessage.getCount(this);
+                retryItem.setVisible(count > 0);
+                if (count > 0) {
+                    retryItem.setTitle(getString(R.string.menu_retry_failed, count));
+                }
+            }
+        } catch (Exception e) {
+            Log.e("BirrBridge", "menu prepare error: " + e);
         }
         return super.onPrepareOptionsMenu(menu);
     }
