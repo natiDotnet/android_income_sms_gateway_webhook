@@ -267,13 +267,18 @@ public class ForwardingConfigDialog {
         String smsFilter = smsFilterInput.getText().toString();
 
         final EditText urlInput = view.findViewById(R.id.input_url);
-        String url = urlInput.getText().toString();
-        if (TextUtils.isEmpty(url)) {
+        String rawUrl = urlInput.getText().toString();
+        if (TextUtils.isEmpty(rawUrl)) {
             urlInput.setError(context.getString(R.string.error_empty_url));
             return null;
         }
+
+        // Resolve against the base server URL if set (e.g. "/webhook/sms" ->
+        // "https://example.com/webhook/sms").
+        BaseServerSettings baseSettings = BaseServerSettings.load(context);
+        String resolvedUrl = baseSettings.resolve(rawUrl);
         try {
-            new URL(url);
+            new URL(resolvedUrl);
         } catch (MalformedURLException e) {
             urlInput.setError(context.getString(R.string.error_wrong_url));
             return null;
@@ -335,7 +340,7 @@ public class ForwardingConfigDialog {
         config.setSender(sender);
         config.setIsSenderRegex(isSenderRegex);
         config.setSmsFilter(smsFilter);
-        config.setUrl(url);
+        config.setUrl(resolvedUrl);
         config.setTemplate(template);
         config.setHeaders(headers);
         config.setRetriesNumber(retriesNum);

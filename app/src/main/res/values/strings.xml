@@ -80,4 +80,8 @@
     <string name="backup_export_failed">Export failed</string>
     <string name="backup_import_success">Imported %d rule(s)</string>
     <string name="backup_import_failed">Import failed: not a valid backup file</string>
+    <string name="label_base_server_section">Base server URL</string>
+    <string name="base_server_info">When set, webhook URLs entered in forwarding rules that do not start with http:// or https:// will have this base URL prepended automatically.</string>
+    <string name="label_base_server_url">Base server URL</string>
+    <string name="base_server_helper">E.g. https://example.com. Leave empty to enter full webhook URLs only.</string>
 </resources>

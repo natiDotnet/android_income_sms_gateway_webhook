@@ -79,6 +79,25 @@ public class SettingsActivity extends AppCompatActivity {
         Button testButton = findViewById(R.id.btn_heartbeat_test);
         testButton.setOnClickListener(v -> testHeartbeat());
 
+        // Base server URL setting
+        BaseServerSettings baseSettings = BaseServerSettings.load(this);
+        final EditText baseUrlInput = findViewById(R.id.input_base_server_url);
+        baseUrlInput.setText(baseSettings.getUrl());
+
+        Button baseSaveButton = findViewById(R.id.btn_base_server_save);
+        baseSaveButton.setOnClickListener(v -> {
+            String baseUrl = baseUrlInput.getText().toString().trim();
+            if (!baseUrl.isEmpty()
+                    && !baseUrl.startsWith("http://")
+                    && !baseUrl.startsWith("https://")) {
+                baseUrlInput.setError(getString(R.string.error_wrong_url));
+                return;
+            }
+            BaseServerSettings updated = new BaseServerSettings(baseUrl);
+            updated.save(this);
+            Toast.makeText(this, R.string.heartbeat_saved_toast, Toast.LENGTH_SHORT).show();
+        });
+
         setupBackupSection();
     }
 
