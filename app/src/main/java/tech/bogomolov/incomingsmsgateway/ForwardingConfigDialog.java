@@ -102,7 +102,9 @@ public class ForwardingConfigDialog {
         });
 
         prepareSimSelector(context, view, 0);
-        setupAdvancedToggle(view, false);
+        // Advanced parameters are now shown by default so users can see all
+        // fields (template, headers, retries, etc.) without tapping the header.
+        setupAdvancedToggle(view, true);
 
         builder.setView(view);
         builder.setPositiveButton(R.string.btn_add, null);
